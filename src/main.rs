@@ -3,10 +3,10 @@ extern crate bmp;
 struct Nonogram {
     img: bmp::Image,
     solution: Vec<Vec<bool>>,
-    width: usize,
-    height: usize,
-    column_hints: Vec<usize>,
-    row_hints: Vec<usize>,
+    width: u32,
+    height: u32,
+    column_hints: Vec<u32>,
+    row_hints: Vec<u32>,
 }
 
 fn main() {
