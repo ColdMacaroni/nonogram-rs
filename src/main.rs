@@ -1,4 +1,5 @@
 extern crate bmp;
+extern crate sdl2;
 
 #[derive(Debug)]
 struct Nonogram {
