@@ -1,5 +1,14 @@
 extern crate bmp;
 
+struct Nonogram {
+    img: bmp::Image,
+    solution: Vec<Vec<bool>>,
+    width: usize,
+    height: usize,
+    column_hints: Vec<usize>,
+    row_hints: Vec<usize>,
+}
+
 fn main() {
     let args: Vec<String> = std::env::args().collect();
     println!("{:?}", args);
