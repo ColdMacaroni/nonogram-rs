@@ -18,7 +18,7 @@ const TRANS: bmp::Pixel = bmp::Pixel {
 
 impl Nonogram {
     fn new(img: bmp::Image) -> Self {
-        let mut column_hints = vec![Vec::new()];
+        let mut column_hints = Vec::new();
         let mut row_hints = Vec::new();
         let mut solution = Vec::new();
 
@@ -26,6 +26,13 @@ impl Nonogram {
         let width = img.get_width();
         let height = img.get_height();
 
+        // Column hints needs a vector for each column. Can't be added on each iteration of the loop like with row hints
+        // 0s will have to be filtered out later
+        for _ in 0..width {
+            column_hints.push(vec![0 as u32]);
+        }
+
+        // I'm trying to keep most of the logic in this loop
         // Doing with y outside because of how bmps are built
         // Top left is 0, 0
         for y in 0..width {
@@ -44,12 +51,20 @@ impl Nonogram {
                 if img.get_pixel(x, y) != TRANS {
                     row.push(true);
 
+                    // Update row hint
                     row_hint_counter += 1;
+
+                    // Update column hint
+                    *column_hints
+                        .get_mut(x as usize)
+                        .unwrap()
+                        .last_mut()
+                        .unwrap() += 1;
                 } else {
                     row.push(false);
 
                     // Update with the new hint only if there is new stuff.
-                    // This avoids pushing 0s into the array.
+                    // This avoids pushing 0s into the row array.
                     if row_hint_counter > 0 {
                         row_hints
                             .get_mut(y as usize)
@@ -57,6 +72,13 @@ impl Nonogram {
                             .push(row_hint_counter);
                         row_hint_counter = 0;
                     }
+
+                    // Add a new thing to be used as hint for the columns
+                    column_hints
+                        .get_mut(x as usize)
+                        .unwrap()
+                        .push(0);
+                    
                 }
             }
 
@@ -67,6 +89,11 @@ impl Nonogram {
                     .unwrap()
                     .push(row_hint_counter);
             }
+        }
+
+        // Delete superflous 0s.
+        for v in column_hints.iter_mut() {
+            v.retain(|&x| x != 0);
         }
 
         Nonogram {
@@ -100,7 +127,7 @@ fn main() {
 
     let nono = Nonogram::new(img);
 
-    println!("{:?}", nono.row_hints);
+    println!("{:?}", nono.column_hints);
 
     todo!();
 }
