@@ -9,24 +9,45 @@ struct Nonogram {
     row_hints: Vec<u32>,
 }
 
+// This colour (white) will be used for transparent. Or nothing.
+const TRANS: bmp::Pixel = bmp::Pixel {
+    r: 0xFF,
+    g: 0xFF,
+    b: 0xFF,
+};
+
 impl Nonogram {
     fn new(img: bmp::Image) -> Self {
-        // let mut solution = Vec();
-        
-        let mut solution = vec![vec![true]];  //DEBUG
-        
-        // img gets moved into struct. Can't do this after.
+        let mut solution = Vec::new();
+
+        // img gets moved into struct. Can't do this after. Besides, it's useful for loop.
         let width = img.get_width();
         let height = img.get_height();
+
+        // Doing with y outside because of how bmps are built
+        // Top left is 0, 0
+        for y in 0..width {
+            // Add a new vector for this row
+            solution.push(Vec::<bool>::new());
+
+            for x in 0..height {
+                // Check that it isn't the colour designated as transparent.
+                solution
+                    .get_mut(y as usize)
+                    .unwrap()
+                    .push(img.get_pixel(x, y) != TRANS);
+            }
+        }
+
         Nonogram {
             img,
             solution,
             width,
             height,
             column_hints: vec![3],
-            row_hints: vec![2]}
+            row_hints: vec![2],
+        }
     }
-
 }
 
 fn main() {
@@ -47,6 +68,10 @@ fn main() {
 
     print_bmp_1bit(&img);
 
+    let nono = Nonogram::new(img);
+
+    println!("{:?}", nono.solution);
+
     todo!();
 }
 
@@ -54,6 +79,7 @@ fn print_bmp_1bit(img: &bmp::Image) {
     // Prints the given bmp::Image as a simple ascii representation
     let width = img.get_width();
     let height = img.get_height();
+
     for y in 0..width {
         for x in 0..height {
             let pixel = img.get_pixel(x, y);
@@ -65,5 +91,5 @@ fn print_bmp_1bit(img: &bmp::Image) {
             }
         }
         println!("");
-    }  
+    }
 }
