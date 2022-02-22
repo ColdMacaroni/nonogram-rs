@@ -9,6 +9,26 @@ struct Nonogram {
     row_hints: Vec<u32>,
 }
 
+impl Nonogram {
+    fn new(img: bmp::Image) -> Self {
+        // let mut solution = Vec();
+        
+        let mut solution = vec![vec![true]];  //DEBUG
+        
+        // img gets moved into struct. Can't do this after.
+        let width = img.get_width();
+        let height = img.get_height();
+        Nonogram {
+            img,
+            solution,
+            width,
+            height,
+            column_hints: vec![3],
+            row_hints: vec![2]}
+    }
+
+}
+
 fn main() {
     let args: Vec<String> = std::env::args().collect();
     println!("{:?}", args);
@@ -31,6 +51,7 @@ fn main() {
 }
 
 fn print_bmp_1bit(img: &bmp::Image) {
+    // Prints the given bmp::Image as a simple ascii representation
     let width = img.get_width();
     let height = img.get_height();
     for y in 0..width {
@@ -40,7 +61,7 @@ fn print_bmp_1bit(img: &bmp::Image) {
             if (pixel.r & pixel.g & pixel.b) == 0xFF {
                 print!(" ");
             } else {
-                print!("#");
+                print!("█");
             }
         }
         println!("");
