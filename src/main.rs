@@ -1,5 +1,6 @@
 extern crate bmp;
 
+#[derive(Debug)]
 struct Nonogram {
     img: bmp::Image,
     solution: Vec<Vec<bool>>,
@@ -74,11 +75,7 @@ impl Nonogram {
                     }
 
                     // Add a new thing to be used as hint for the columns
-                    column_hints
-                        .get_mut(x as usize)
-                        .unwrap()
-                        .push(0);
-                    
+                    column_hints.get_mut(x as usize).unwrap().push(0);
                 }
             }
 
@@ -109,7 +106,6 @@ impl Nonogram {
 
 fn main() {
     let args: Vec<String> = std::env::args().collect();
-    println!("{:?}", args);
 
     // Open file from first arg
     let mut f = std::fs::File::open(args[1].to_string()).expect("File not found.");
@@ -117,19 +113,8 @@ fn main() {
     // Try to open as bmp
     let img: bmp::Image = bmp::from_reader(&mut f).unwrap();
 
-    println!(
-        "Read a BMP with dimensions {}x{}px",
-        img.get_width(),
-        img.get_height()
-    );
-
-    print_bmp_1bit(&img);
-
+    // Convert
     let nono = Nonogram::new(img);
-
-    println!("{:?}", nono.column_hints);
-
-    todo!();
 }
 
 fn print_bmp_1bit(img: &bmp::Image) {
