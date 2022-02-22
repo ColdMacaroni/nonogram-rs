@@ -25,5 +25,24 @@ fn main() {
         img.get_height()
     );
 
+    print_bmp_1bit(&img);
+
     todo!();
+}
+
+fn print_bmp_1bit(img: &bmp::Image) {
+    let width = img.get_width();
+    let height = img.get_height();
+    for y in 0..width {
+        for x in 0..height {
+            let pixel = img.get_pixel(x, y);
+
+            if (pixel.r & pixel.g & pixel.b) == 0xFF {
+                print!(" ");
+            } else {
+                print!("#");
+            }
+        }
+        println!("");
+    }  
 }
